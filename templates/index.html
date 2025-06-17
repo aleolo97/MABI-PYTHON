@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestión Biomédica</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3">
+    <span class="navbar-brand">Instituto del Corazón</span>
+    <div class="ms-auto">
+      {% if logged_in %}
+      <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Cerrar sesión</a>
+      {% else %}
+      <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm">Iniciar sesión</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2 class="mb-4">Listado de Equipos Médicos</h2>
+
+    {% if logged_in %}
+      <a href="{{ url_for('registrar') }}" class="btn btn-success mb-3">➕ Registrar nuevo equipo</a>
+    {% endif %}
+
+    <form method="GET" class="row g-2 mb-3">
+      <div class="col-md-4">
+        <select name="ubicacion" class="form-select">
+          <option value="">Filtrar por Ubicación</option>
+          {% for u in ubicaciones %}
+          <option value="{{ u }}" {% if request.args.get('ubicacion') == u %}selected{% endif %}>{{ u }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select name="modalidad" class="form-select">
+          <option value="">Filtrar por Modalidad</option>
+          {% for m in modalidades %}
+          <option value="{{ m }}" {% if request.args.get('modalidad') == m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-primary w-100">Aplicar filtros</button>
+      </div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Inventario</th>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Serie</th>
+            <th>Ubicación</th>
+            <th>Modalidad</th>
+            <th>INVIMA</th>
+            {% if logged_in %}
+            <th>Acciones</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for equipo in equipos %}
+          <tr>
+            <td>{{ equipo.inventario }}</td>
+            <td>{{ equipo.nombre }}</td>
+            <td>{{ equipo.marca }}</td>
+            <td>{{ equipo.modelo }}</td>
+            <td>{{ equipo.serie }}</td>
+            <td>{{ equipo.ubicacion }}</td>
+            <td>{{ equipo.modalidad }}</td>
+            <td>{{ equipo.invima }}</td>
+            {% if logged_in %}
+            <td><a href="{{ url_for('editar', id=equipo.id) }}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
