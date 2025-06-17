@@ -3,10 +3,14 @@ from models import db, Equipo, Usuario
 from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'  # Asegúrate de que sea en la raíz
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'clave_supersecreta'
 db.init_app(app)
+
+# ✅ Crear automáticamente la base de datos en Render
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():
